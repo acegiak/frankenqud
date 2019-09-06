@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objects>
+<object Name="OperatingTable" Inherits="BaseChair">
+    <part Name="Render" DisplayName="operating table" ColorString="&amp;w" DetailColor="W" Tile="Items/sw_cot.bmp" />
+    <part Name="Description" Short="Autosawtable" />
+    <part Name="Bed" bNoSmartUse="true"/>
+    <part Name="Chair" bNoSmartUse="true" />
+    <tag Name="Tier" Value="0" />
+    <tag Name="HangingSupport" />
+    <part Name="acegiak_OperatingTable"/>
+    <!-- <tag Name="QuestableVerb" Value="sit on,sleep in"></tag>
+    <tag Name="QuestableEvent" Value="SatIn,SleptIn"></tag>
+    <stag Name="Sleep" /> -->
+    <!-- <part Name="SmartuseTwiddles"></part> -->
+</object>
+</objects>
