@@ -13,4 +13,8 @@
     <stag Name="Sleep" /> -->
     <!-- <part Name="SmartuseTwiddles"></part> -->
 </object>
+<object Name="Corpse" Load="Merge">
+    <part Name="acegiak_DismemberSearcher"/>
+
+</object>
 </objects>

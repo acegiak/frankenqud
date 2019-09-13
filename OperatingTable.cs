@@ -53,7 +53,7 @@ namespace XRL.World.Parts
             char ch = 'a';
             part2.ForeachObject(delegate(XRL.World.GameObject GO)
             {
-                if(GO != null && PartWas(GO) != null){
+                if(GO != null &&(GO.GetPart<acegiak_DismemberSearcher>() != null || PartWas(GO) != null)){
                     ObjectChoices.Add(GO);
                     HotkeyList.Add(ch);
                     ChoiceList.Add(GO.DisplayName);
@@ -112,23 +112,139 @@ namespace XRL.World.Parts
             }
 			BodyPart part = null;
             int choicenum = Popup.ShowOptionList(string.Empty, ChoiceList.ToArray(), HotkeyList.ToArray(), 0, "Where to attach "+what.the+what.DisplayNameOnly+"?", 60,  false, true);
-            if (choicenum %2== 1)
-            {
-				part = who.GetPart<Body>().GetBody().AddPartAt(ObjectChoices[choicenum],type);
-            }else{
-				part = ObjectChoices[choicenum].AddPart(type);
+            
+			if(what.GetPart<acegiak_DismemberSearcher>() != null && what.GetPart<acegiak_DismemberSearcher>().Part != null){
+				recurAdd(ObjectChoices[choicenum],what.GetPart<acegiak_DismemberSearcher>().Part, choicenum %2== 1);
+
+				//RegenerateLimb(what,what.GetPart<acegiak_DismemberSearcher>().DismemberedParts[0],ObjectChoices[choicenum],choicenum %2== 1);
 			}
-			if(part == null){
-				return;
-			}
-			part.Description = "Augmented "+part.Description ;
+			// if (choicenum %2== 1)
+            // {
+			// 	if(what.GetPart<acegiak_DismemberSearcher>() != null && what.GetPart<acegiak_DismemberSearcher>().Part != null){
+			// 		part = who.GetPart<Body>().GetBody().AddPart(what.GetPart<acegiak_DismemberSearcher>().Part,ObjectChoices[choicenum].Position+1);
+			// 	}else{
+			// 		part = who.GetPart<Body>().GetBody().AddPartAt(ObjectChoices[choicenum],type);
+			// 	}
+            // }else{
+			// 	if(what.GetPart<acegiak_DismemberSearcher>() != null && what.GetPart<acegiak_DismemberSearcher>().Part != null){
+			// 		part = recurAdd(what.GetPart<acegiak_DismemberSearcher>().Part, ObjectChoices[choicenum]);
+			// 	}else{
+			// 		part = ObjectChoices[choicenum].AddPart(type);
+			// 	}
+				
+			// }
+			// if(part == null){
+			// 	return;
+			// }
+			// part.Description = "Augmented "+part.Description ;
 
 			what.Destroy(true);
 			Popup.Show("You augment yourself with a new "+type.Name+".");
 
 		}
 
+		public void recurAdd(BodyPart destination, BodyPart add, bool after = false){
+			if(add == null){
+				return;
+			}
+			add.ParentBody = destination.ParentBody;
+			try{
+				BodyPart part = null;
+				if(after){
+					part = destination.ParentBody.GetBody().AddPart(add,destination.Position+1);
+				}else{
+					part = destination.AddPart(add);
+				}
+			}catch(Exception e){
+
+			}
+			if(add.Parts != null){
+				foreach(BodyPart p in add.Parts){
+					recurAdd(add,p,false);
+				}
+			}
+
+		}
+
+		// public void RegenerateLimb(GameObject what,Body.DismemberedPart Part,BodyPart destination,bool after = false)
+		// {
+		// 	IPart.AddPlayerMessage("PARTT:"+Part.Part.Name);
+		// 	BodyPart part = null;
+		// 	if(after){
+		// 		part = destination.ParentBody.GetBody().AddPart(Part.Part,destination.Position+1);
+		// 	}else{
+		// 		part = destination.AddPart(Part.Part);
+		// 	}
+
+		// 	//Part.Reattach(this);
+		// 	what.GetPart<acegiak_DismemberSearcher>().DismemberedParts.Remove(Part);
+		// 	if (ParentObject.IsPlayer())
+		// 	{
+		// 		// IPart.AddPlayerMessage("&GYou regenerate your " + Part.Part.GetOrdinalName() + "&G!");
+		// 		// AchievementManager.SetAchievement("ACH_REGENERATE_LIMB");
+		// 	}
+		// 	else if (Visible())
+		// 	{
+		// 		//MessageQueue.AddPlayerMessage("&R" + ParentObject.The + ParentObject.DisplayName + ParentObject.GetVerb("regenerate") + " " + ParentObject.its + " " + Part.Part.GetOrdinalName() + "&R!");
+		// 	}
+		// 	if (Part.Part.HasID())
+		// 	{
+		// 		Body.DismemberedPart dismemberedPart = null;
+		// 		while ((dismemberedPart = what.GetPart<acegiak_DismemberSearcher>().FindRegenerablePart(Part.Part.ID)) != null)
+		// 		{
+		// 			//RegenerateLimb(what,dismemberedPart,part);
+		// 		}
+		// 	}
+		// 	// if (DoUpdate)
+		// 	// {
+		// 	// 	UpdateBodyParts();
+		// 	// }
+		// }
+
+
+
+
+		// public string recurAdd(BodyPart destination, string partdescription, bool after = false){
+		// 	IPart.AddPlayerMessage("processing: "+partdescription);
+		// 	if(partdescription.Substring(0,1) == "}"){
+		// 		return partdescription.Substring(1);
+		// 	}
+
+		// 	string PartType = partdescription.Substring(1,partdescription.IndexOf('|')-1);
+
+		// 	string PartName = partdescription.Substring(partdescription.IndexOf('|')+1,partdescription.IndexOf('{')-(partdescription.IndexOf('|')+1));
+		// 	IPart.AddPlayerMessage("Part Type:"+PartType);
+		// 	IPart.AddPlayerMessage("Part Name:"+PartName);
+
+		// 	BodyPart part = null;
+
+
+
+		// 	part.Description = Regex.Replace(part.Description,"fore","");
+		// 	part.Description = Regex.Replace(part.Description,"hind","");
+		// 	part.Description = Regex.Replace(part.Description,"mid","");
+		// 	part.Description = "Augmented "+Grammar.MakeTitleCase(part.Name);
+
+
+		// 	//    @hand|sucker{@finger|finger{}}@hand|sucker2{}}
+
+		// 	while(partdescription.Substring(0,1) != "}"){
+		// 		partdescription = partdescription.Substring(partdescription.IndexOf("{")+1);
+		// 		partdescription = recurAdd(part,partdescription,false);
+		// 	}
+		// 	return partdescription;
+		// }
+
 		public BodyPartType PartWas(GameObject dismembered){
+
+			// acegiak_DismemberSearcher searcher = dismembered.GetPart<acegiak_DismemberSearcher>();
+			// if(searcher != null && searcher.SavedParts != null){
+			// 	string PartType = searcher.SavedParts.Substring(1,searcher.SavedParts.IndexOf('|')-1);
+
+			// 	IPart.AddPlayerMessage("A Fancy part:"+PartType);
+			// 	return BodyPartType.Get(PartType);
+			// }
+
 			string name = dismembered.GetPart<Description>().Short;
 			if(!name.Contains("severed ")){
 				return null;
