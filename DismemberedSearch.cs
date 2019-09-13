@@ -47,6 +47,7 @@ namespace XRL.World.Parts
                             if(body != null){
 								IPart.AddPlayerMessage("its parent had a body!");
                                 Part = DeepCopy(body.GetPartByID(ParentObject.GetIntProperty("LimbSourceBodyPartID"),true));
+
 								if(Part != null){
 									IPart.AddPlayerMessage("its had a body part!");
 									//StoreParts(Part);

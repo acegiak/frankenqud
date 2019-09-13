@@ -147,6 +147,17 @@ namespace XRL.World.Parts
 			if(add == null){
 				return;
 			}
+			
+
+			add.Description = "Augmented "+Grammar.MakeTitleCase(add.Name);
+			add.Description = Regex.Replace(add.Description,"Fore","");
+			add.Description = Regex.Replace(add.Description,"Hind","");
+			add.Description = Regex.Replace(add.Description,"Mid","");
+			add.Description = Regex.Replace(add.Description,"Right *","");
+			add.Description = Regex.Replace(add.Description,"Left *","");
+			add.Description = Grammar.MakeTitleCase(add.Description);
+
+
 			add.ParentBody = destination.ParentBody;
 			try{
 				BodyPart part = null;
@@ -220,10 +231,7 @@ namespace XRL.World.Parts
 
 
 
-		// 	part.Description = Regex.Replace(part.Description,"fore","");
-		// 	part.Description = Regex.Replace(part.Description,"hind","");
-		// 	part.Description = Regex.Replace(part.Description,"mid","");
-		// 	part.Description = "Augmented "+Grammar.MakeTitleCase(part.Name);
+
 
 
 		// 	//    @hand|sucker{@finger|finger{}}@hand|sucker2{}}
