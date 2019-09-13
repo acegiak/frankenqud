@@ -11,7 +11,7 @@ namespace XRL.World.Parts
 	[Serializable]
 	public class acegiak_DismemberSearcher : IPart
 	{
-
+		[NonSerialized]
 		public BodyPart Part;
 
 		public acegiak_DismemberSearcher()
@@ -181,5 +181,28 @@ namespace XRL.World.Parts
 		}
 
 
+		public override void SaveData(SerializationWriter Writer)
+		{
+			if(Part != null){
+				Writer.Write(true);
+				Part.Save(Writer);
+			}else{
+				Writer.Write(false);
+			}
+			base.SaveData(Writer);
+		}
+
+		public override void LoadData(SerializationReader Reader)
+		{
+			if(Reader.ReadBoolean()){
+				Part = BodyPart.Load(Reader, null);
+			}
+			base.LoadData(Reader);
+		}
+
+		
+
     }
+
+
 }
