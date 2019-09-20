@@ -34,10 +34,10 @@ namespace XRL.World.Parts
 		{
 			if (E.ID == "EnteredCell")
 			{
-				IPart.AddPlayerMessage(ParentObject.DisplayName+" fell on the ground.");
+				//IPart.AddPlayerMessage(ParentObject.DisplayName+" fell on the ground.");
                 if(ParentObject.HasProperty("LimbSourceGameObjectID") && ParentObject.HasProperty("LimbSourceBodyPartID")){
 
-					IPart.AddPlayerMessage("it had properties!");
+					//IPart.AddPlayerMessage("it had properties!");
                     Cell cell = E.GetParameter("Cell") as Cell;
                     foreach(GameObject GO in cell.GetObjectsInCell()){
                         if(GO.id == ParentObject.GetStringProperty("LimbSourceGameObjectID")){
@@ -45,11 +45,11 @@ namespace XRL.World.Parts
 							IPart.AddPlayerMessage("it had a parent!");
                             Body body = GO.GetPart<Body>();
                             if(body != null){
-								IPart.AddPlayerMessage("its parent had a body!");
+								//IPart.AddPlayerMessage("its parent had a body!");
                                 Part = DeepCopy(body.GetPartByID(ParentObject.GetIntProperty("LimbSourceBodyPartID"),true));
 
 								if(Part != null){
-									IPart.AddPlayerMessage("its had a body part!");
+									//IPart.AddPlayerMessage("its had a body part!");
 									//StoreParts(Part);
 									//IPart.AddPlayerMessage("Encoded As:"+this.SavedParts);
 								}

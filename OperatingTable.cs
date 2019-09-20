@@ -75,7 +75,13 @@ namespace XRL.World.Parts
         }
 
 		public void Augment(GameObject who, GameObject what){
-			BodyPartType type = PartWas(what);
+			BodyPartType type = null;
+			if(what.GetPart<acegiak_DismemberSearcher>().Part != null){
+				type = BodyPartType.Get(what.GetPart<acegiak_DismemberSearcher>().Part.Type);
+			}else{
+				type = PartWas(what);
+			}
+
 			if(type == null){
 				Popup.Show("You don't know how to attach that.");
 				return;
@@ -116,31 +122,13 @@ namespace XRL.World.Parts
 			if(what.GetPart<acegiak_DismemberSearcher>() != null && what.GetPart<acegiak_DismemberSearcher>().Part != null){
 				recurAdd(ObjectChoices[choicenum],what.GetPart<acegiak_DismemberSearcher>().Part, choicenum %2== 1);
 
-				//RegenerateLimb(what,what.GetPart<acegiak_DismemberSearcher>().DismemberedParts[0],ObjectChoices[choicenum],choicenum %2== 1);
 			}
-			// if (choicenum %2== 1)
-            // {
-			// 	if(what.GetPart<acegiak_DismemberSearcher>() != null && what.GetPart<acegiak_DismemberSearcher>().Part != null){
-			// 		part = who.GetPart<Body>().GetBody().AddPart(what.GetPart<acegiak_DismemberSearcher>().Part,ObjectChoices[choicenum].Position+1);
-			// 	}else{
-			// 		part = who.GetPart<Body>().GetBody().AddPartAt(ObjectChoices[choicenum],type);
-			// 	}
-            // }else{
-			// 	if(what.GetPart<acegiak_DismemberSearcher>() != null && what.GetPart<acegiak_DismemberSearcher>().Part != null){
-			// 		part = recurAdd(what.GetPart<acegiak_DismemberSearcher>().Part, ObjectChoices[choicenum]);
-			// 	}else{
-			// 		part = ObjectChoices[choicenum].AddPart(type);
-			// 	}
-				
-			// }
-			// if(part == null){
-			// 	return;
-			// }
-			// part.Description = "Augmented "+part.Description ;
+			
 
 			what.Destroy(true);
+			who.GetPart<Body>().UpdateBodyParts();
+			who.GetPart<Body>().RecalculateArmor();
 			Popup.Show("You augment yourself with a new "+type.Name+".");
-
 		}
 
 		public void recurAdd(BodyPart destination, BodyPart add, bool after = false){
@@ -177,81 +165,9 @@ namespace XRL.World.Parts
 
 		}
 
-		// public void RegenerateLimb(GameObject what,Body.DismemberedPart Part,BodyPart destination,bool after = false)
-		// {
-		// 	IPart.AddPlayerMessage("PARTT:"+Part.Part.Name);
-		// 	BodyPart part = null;
-		// 	if(after){
-		// 		part = destination.ParentBody.GetBody().AddPart(Part.Part,destination.Position+1);
-		// 	}else{
-		// 		part = destination.AddPart(Part.Part);
-		// 	}
-
-		// 	//Part.Reattach(this);
-		// 	what.GetPart<acegiak_DismemberSearcher>().DismemberedParts.Remove(Part);
-		// 	if (ParentObject.IsPlayer())
-		// 	{
-		// 		// IPart.AddPlayerMessage("&GYou regenerate your " + Part.Part.GetOrdinalName() + "&G!");
-		// 		// AchievementManager.SetAchievement("ACH_REGENERATE_LIMB");
-		// 	}
-		// 	else if (Visible())
-		// 	{
-		// 		//MessageQueue.AddPlayerMessage("&R" + ParentObject.The + ParentObject.DisplayName + ParentObject.GetVerb("regenerate") + " " + ParentObject.its + " " + Part.Part.GetOrdinalName() + "&R!");
-		// 	}
-		// 	if (Part.Part.HasID())
-		// 	{
-		// 		Body.DismemberedPart dismemberedPart = null;
-		// 		while ((dismemberedPart = what.GetPart<acegiak_DismemberSearcher>().FindRegenerablePart(Part.Part.ID)) != null)
-		// 		{
-		// 			//RegenerateLimb(what,dismemberedPart,part);
-		// 		}
-		// 	}
-		// 	// if (DoUpdate)
-		// 	// {
-		// 	// 	UpdateBodyParts();
-		// 	// }
-		// }
-
-
-
-
-		// public string recurAdd(BodyPart destination, string partdescription, bool after = false){
-		// 	IPart.AddPlayerMessage("processing: "+partdescription);
-		// 	if(partdescription.Substring(0,1) == "}"){
-		// 		return partdescription.Substring(1);
-		// 	}
-
-		// 	string PartType = partdescription.Substring(1,partdescription.IndexOf('|')-1);
-
-		// 	string PartName = partdescription.Substring(partdescription.IndexOf('|')+1,partdescription.IndexOf('{')-(partdescription.IndexOf('|')+1));
-		// 	IPart.AddPlayerMessage("Part Type:"+PartType);
-		// 	IPart.AddPlayerMessage("Part Name:"+PartName);
-
-		// 	BodyPart part = null;
-
-
-
-
-
-
-		// 	//    @hand|sucker{@finger|finger{}}@hand|sucker2{}}
-
-		// 	while(partdescription.Substring(0,1) != "}"){
-		// 		partdescription = partdescription.Substring(partdescription.IndexOf("{")+1);
-		// 		partdescription = recurAdd(part,partdescription,false);
-		// 	}
-		// 	return partdescription;
-		// }
+		
 
 		public BodyPartType PartWas(GameObject dismembered){
-
-			// acegiak_DismemberSearcher searcher = dismembered.GetPart<acegiak_DismemberSearcher>();
-			// if(searcher != null && searcher.SavedParts != null){
-			// 	string PartType = searcher.SavedParts.Substring(1,searcher.SavedParts.IndexOf('|')-1);
-
-			// 	IPart.AddPlayerMessage("A Fancy part:"+PartType);
-			// 	return BodyPartType.Get(PartType);
-			// }
 
 			string name = dismembered.GetPart<Description>().Short;
 			if(!name.Contains("severed ")){
@@ -262,15 +178,11 @@ namespace XRL.World.Parts
 			name = Regex.Replace(name,"fore","");
 			name = Regex.Replace(name,"hind","");
 			name = Regex.Replace(name,"mid","");
-			//name = name.Substring(0,name.Length-1);
 			name = Grammar.MakeTitleCase(name);
-			//IPart.AddPlayerMessage("partname:"+name);
 			if(BodyPartType.Get(name) != null){
-				//IPart.AddPlayerMessage("So it turns out this aint null:"+BodyPartType.Get(name).ToString());
 				return BodyPartType.Get(name);
 			}
 			foreach(string smallname in name.Split(' ')){
-				//IPart.AddPlayerMessage("partname:"+smallname);
 				if(BodyPartType.Get(smallname) != null){
 					return BodyPartType.Get(smallname);
 				}
