@@ -77,7 +77,7 @@ namespace XRL.World.Parts
 		public void Augment(GameObject who, GameObject what){
 			BodyPartType type = null;
 			if(what.GetPart<acegiak_DismemberSearcher>().Part != null){
-				type = BodyPartType.Get(what.GetPart<acegiak_DismemberSearcher>().Part.Type);
+				type = Anatomies.GetBodyPartType(what.GetPart<acegiak_DismemberSearcher>().Part.Type);
 			}else{
 				type = PartWas(what);
 			}
@@ -179,12 +179,12 @@ namespace XRL.World.Parts
 			name = Regex.Replace(name,"hind","");
 			name = Regex.Replace(name,"mid","");
 			name = Grammar.MakeTitleCase(name);
-			if(BodyPartType.Get(name) != null){
-				return BodyPartType.Get(name);
+			if(Anatomies.GetBodyPartType(name) != null){
+				return Anatomies.GetBodyPartType(name);
 			}
 			foreach(string smallname in name.Split(' ')){
-				if(BodyPartType.Get(smallname) != null){
-					return BodyPartType.Get(smallname);
+				if(Anatomies.GetBodyPartType(smallname) != null){
+					return Anatomies.GetBodyPartType(smallname);
 				}
 			}
 			return null;
