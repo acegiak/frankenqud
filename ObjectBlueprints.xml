@@ -8,8 +8,8 @@
     </object>
 
 <object Name="OperatingTable" Inherits="BaseChair">
-    <part Name="Render" DisplayName="operating table" ColorString="&amp;w" DetailColor="W" Tile="Items/sw_cot.bmp" />
-    <part Name="Description" Short="Autosawtable" />
+    <part Name="Render" DisplayName="operating table" ColorString="&amp;w" DetailColor="W" Tile="Items/sawtable.png" />
+    <part Name="Description" Short="The whirring saws and reaching probes grasp idly for any unwitting subject that might pass too close. Only those in need of upgrading will be subject to the automated augmentations of the operating table. That is to say, all of them." />
     <part Name="Bed" bNoSmartUse="true"/>
     <part Name="Chair" bNoSmartUse="true" />
     <tag Name="Tier" Value="0" />
@@ -32,6 +32,6 @@
     <tag Name="ExcludeFromDynamicEncounters" Value="always"></tag>
     <part Name="EquippedFungusAchievement"></part>
     <part Name="Render" DisplayName="&amp;Wscarration" Tile="Items/sw_waxflab.bmp" ColorString="&amp;R" DetailColor="y" />
-    <part Name="Description" Short="A ragged lump of knotted flesh"/>
+    <part Name="Description" Short="A ragged lump of knotted flesh."/>
     </object>
 </objects>

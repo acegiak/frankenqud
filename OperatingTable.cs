@@ -28,11 +28,23 @@ namespace XRL.World.Parts
 		{
 			Object.RegisterPartEvent(this, "GetInventoryActions");
 			Object.RegisterPartEvent(this, "InvCommandOperate");
+			Object.RegisterPartEvent(this, "CanSmartUse");
+			Object.RegisterPartEvent(this, "CommandSmartUse");
 			base.Register(Object);
 		}
 
 		public override bool FireEvent(Event E)
 		{
+			if (E.ID == "CanSmartUse")
+			{
+					return false;
+				
+			}
+			else if (E.ID == "CommandSmartUse")
+			{
+					Operate(E.GetGameObjectParameter("User"));
+				
+			}
 			if (E.ID == "GetInventoryActions")
 			{
 
@@ -120,7 +132,13 @@ namespace XRL.World.Parts
             int choicenum = Popup.ShowOptionList(string.Empty, ChoiceList.ToArray(), HotkeyList.ToArray(), 0, "Where to attach "+what.the+what.DisplayNameOnly+"?", 60,  false, true);
             
 			if(what.GetPart<acegiak_DismemberSearcher>() != null && what.GetPart<acegiak_DismemberSearcher>().Part != null){
-				recurAdd(ObjectChoices[choicenum],what.GetPart<acegiak_DismemberSearcher>().Part,who, choicenum %2== 1);
+				if(!recurAdd(ObjectChoices[choicenum],what.GetPart<acegiak_DismemberSearcher>().Part,who, choicenum %2== 1)){
+					Popup.Show("Something went awry.");
+
+					return;
+				}
+			}else{
+				Popup.Show("it had no dismemberedpart.");
 
 			}
 			
@@ -131,9 +149,9 @@ namespace XRL.World.Parts
 			Popup.Show("You augment yourself with a new "+type.Name+".");
 		}
 
-		public void recurAdd(BodyPart destination, BodyPart add, GameObject who, bool after = false){
+		public bool recurAdd(BodyPart destination, BodyPart add, GameObject who, bool after = false){
 			if(add == null){
-				return;
+				return true;
 			}
 			
 
@@ -159,7 +177,7 @@ namespace XRL.World.Parts
 
 
 
-				int saveroll = XRL.Rules.Stat.RollSave(who,"Intelligence,Agility",20);
+				int saveroll = XRL.Rules.Stat.RollSave(who,"Intelligence",22);
 				string[] stats = new string[]{"Intelligence","Willpower","Ego","Agility","Toughness","Strength"};
 				if(part.Type=="Face" || part.Type=="Head"){
 					stats = new string[]{"Intelligence","Willpower","Ego"};
@@ -170,7 +188,7 @@ namespace XRL.World.Parts
 				if (saveroll < 5){
 					who.Statistics[thestat].BaseValue--;
 					Popup.Show("Your "+thestat+" is damaged by the augmentation process.");
-				}else if(saveroll < 10){
+				}else if(saveroll < 15){
 					part.Equip(GameObject.create("Scarring"));
 					Popup.Show("Your new "+part.Name+" becomes horribly scarred by the augmentation process.");
 				}else if(saveroll > 20){
@@ -178,15 +196,19 @@ namespace XRL.World.Parts
 					Popup.Show("Your "+thestat+" is enhanced by your new "+part.Name+".");
 				}
 			}catch(Exception e){
-
+				IPart.AddPlayerMessage(e.Message);
+				return false;
 			}
 
 			
 			if(add.Parts != null){
 				foreach(BodyPart p in add.Parts){
-					recurAdd(add,p,who,false);
+					if(!recurAdd(add,p,who,false)){
+						return false;
+					};
 				}
 			}
+			return true;
 
 		}
 
