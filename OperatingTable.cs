@@ -120,7 +120,7 @@ namespace XRL.World.Parts
             int choicenum = Popup.ShowOptionList(string.Empty, ChoiceList.ToArray(), HotkeyList.ToArray(), 0, "Where to attach "+what.the+what.DisplayNameOnly+"?", 60,  false, true);
             
 			if(what.GetPart<acegiak_DismemberSearcher>() != null && what.GetPart<acegiak_DismemberSearcher>().Part != null){
-				recurAdd(ObjectChoices[choicenum],what.GetPart<acegiak_DismemberSearcher>().Part, choicenum %2== 1);
+				recurAdd(ObjectChoices[choicenum],what.GetPart<acegiak_DismemberSearcher>().Part,who, choicenum %2== 1);
 
 			}
 			
@@ -131,7 +131,7 @@ namespace XRL.World.Parts
 			Popup.Show("You augment yourself with a new "+type.Name+".");
 		}
 
-		public void recurAdd(BodyPart destination, BodyPart add, bool after = false){
+		public void recurAdd(BodyPart destination, BodyPart add, GameObject who, bool after = false){
 			if(add == null){
 				return;
 			}
@@ -147,6 +147,8 @@ namespace XRL.World.Parts
 
 
 			add.ParentBody = destination.ParentBody;
+
+
 			try{
 				BodyPart part = null;
 				if(after){
@@ -154,12 +156,35 @@ namespace XRL.World.Parts
 				}else{
 					part = destination.AddPart(add);
 				}
+
+
+
+				int saveroll = XRL.Rules.Stat.RollSave(who,"Intelligence,Agility",20);
+				string[] stats = new string[]{"Intelligence","Willpower","Ego","Agility","Toughness","Strength"};
+				if(part.Type=="Face" || part.Type=="Head"){
+					stats = new string[]{"Intelligence","Willpower","Ego"};
+				}else{
+					stats = new string[]{"Strength","Toughness","Agility"};
+				}
+				string thestat = stats[XRL.Rules.Stat.Rnd2.Next(stats.Length)];
+				if (saveroll < 5){
+					who.Statistics[thestat].BaseValue--;
+					Popup.Show("Your "+thestat+" is damaged by the augmentation process.");
+				}else if(saveroll < 10){
+					part.Equip(GameObject.create("Scarring"));
+					Popup.Show("Your new "+part.Name+" becomes horribly scarred by the augmentation process.");
+				}else if(saveroll > 20){
+					who.Statistics[thestat].BaseValue++;
+					Popup.Show("Your "+thestat+" is enhanced by your new "+part.Name+".");
+				}
 			}catch(Exception e){
 
 			}
+
+			
 			if(add.Parts != null){
 				foreach(BodyPart p in add.Parts){
-					recurAdd(add,p,false);
+					recurAdd(add,p,who,false);
 				}
 			}
 

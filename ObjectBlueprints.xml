@@ -31,7 +31,7 @@
     <part Name="Cursed"></part>
     <tag Name="ExcludeFromDynamicEncounters" Value="always"></tag>
     <part Name="EquippedFungusAchievement"></part>
-    <part Name="Render" DisplayName="&amp;Ywaxflab" Tile="Items/sw_waxflab.bmp" ColorString="&amp;W" DetailColor="w" />
-    <part Name="Description" Short="A wax-weeping fungus has encased the appendage in a lucent cast. Body heat melts the innermost layer, and a thick, waxy milk sloshes against its hardened prison." />
-  </object>
+    <part Name="Render" DisplayName="&amp;Wscarration" Tile="Items/sw_waxflab.bmp" ColorString="&amp;R" DetailColor="y" />
+    <part Name="Description" Short="A ragged lump of knotted flesh"/>
+    </object>
 </objects>
