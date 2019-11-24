@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <objects>
 
-    <object Name="DoNotUse_OperatingTableInitializer" Inherits="Item">
-        <part Name="Render" DisplayName="[Dummy item for operatingtables]" />
-        <part Name="acegiak_frankenpopinit" />
-        <tag Name="ExcludeFromDynamicEncounters" />
-    </object>
+<object Name="DoNotUse_OperatingTableInitializer" Inherits="Item">
+    <part Name="Render" DisplayName="[Dummy item for operatingtables]" />
+    <part Name="acegiak_frankenpopinit" />
+    <tag Name="ExcludeFromDynamicEncounters" />
+</object>
 
 <object Name="OperatingTable" Inherits="BaseChair">
     <part Name="Render" DisplayName="operating table" ColorString="&amp;w" DetailColor="W" Tile="Items/sawtable.png" />
@@ -22,7 +22,9 @@
 </object>
 <object Name="Corpse" Load="Merge">
     <part Name="acegiak_DismemberSearcher"/>
-
+</object>
+<object Name="Creature" Load="Merge">
+    <part Name="acegiak_DismemberLogger"/>
 </object>
 <object Name="Scarring" Inherits="Item">
     <part Name="Armor" WornOn="*" DV="0" AV="0"></part>

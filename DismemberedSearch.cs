@@ -14,6 +14,9 @@ namespace XRL.World.Parts
 		[NonSerialized]
 		public BodyPart Part;
 
+		[NonSerialized]
+		public static List<GameObject> dismeberees = new List<GameObject>();
+
 		public acegiak_DismemberSearcher()
 		{
 			base.Name = "acegiak_DismemberSearcher";
@@ -39,24 +42,27 @@ namespace XRL.World.Parts
 
 					//IPart.AddPlayerMessage("it had properties!");
                     Cell cell = E.GetParameter("Cell") as Cell;
-                    foreach(GameObject GO in cell.GetObjectsInCell()){
-                        if(GO.id == ParentObject.GetStringProperty("LimbSourceGameObjectID")){
+					GameObject parentO = GameObject.findById(ParentObject.GetStringProperty("LimbSourceGameObjectID"));
+					if(parentO == null){
+						//IPart.AddPlayerMessage("not in cell!");
+					
+						foreach(GameObject GO in dismeberees){
+							//IPart.AddPlayerMessage("are you my mummy("+ParentObject.GetStringProperty("LimbSourceGameObjectID")+")?"+GO.DisplayName+":"+GO.id);
 
-							IPart.AddPlayerMessage("it had a parent!");
-                            Body body = GO.GetPart<Body>();
-                            if(body != null){
-								//IPart.AddPlayerMessage("its parent had a body!");
-                                Part = DeepCopy(body.GetPartByID(ParentObject.GetIntProperty("LimbSourceBodyPartID"),true));
+							if(GO.id == ParentObject.GetStringProperty("LimbSourceGameObjectID")){
 
-								if(Part != null){
-									//IPart.AddPlayerMessage("its had a body part!");
-									//StoreParts(Part);
-									//IPart.AddPlayerMessage("Encoded As:"+this.SavedParts);
-								}
-								break;
-                            }
-                        }
-                    }
+								parentO = GO;
+							}
+						}
+					}
+					if(parentO != null){
+						//IPart.AddPlayerMessage("it had a parent!");
+						Body body = parentO.GetPart<Body>();
+						if(body != null){
+							//IPart.AddPlayerMessage("its parent had a body!");
+							Part = DeepCopy(body.GetPartByID(ParentObject.GetIntProperty("LimbSourceBodyPartID"),true));
+						}
+					}
                 }
 				
 			}
@@ -64,69 +70,6 @@ namespace XRL.World.Parts
 			return base.FireEvent(E);
 		}
 
-		// public static string encodePartLayout(BodyPart part){
-		// 	if(part == null){
-		// 		return string.Empty;
-		// 	}
-		// 	string ret = "@"+part.Type+"|"+part.Name;
-		// 	ret += "{";
-		// 	if(part.Parts != null){
-		// 		foreach(BodyPart p in part.Parts){
-		// 			ret += encodePartLayout(p);
-		// 		}
-		// 	}
-		// 	ret += "}";
-		// 	return ret;
-		// }
-
-
-		// public void StoreParts(BodyPart Part)
-		// {
-		// 	BodyPart parentPart = Part.GetParentPart();
-		// 	Body.DismemberedPart dismemberedPart = (!Part.Extrinsic) ? new Body.DismemberedPart(Part, parentPart) : null;
-		// 	if (Part.Parts != null && Part.Parts.Count > 0)
-		// 	{
-		// 		if (Part.Parts.Count > 1)
-		// 		{
-		// 			List<BodyPart> list = new List<BodyPart>(Part.Parts);
-		// 			foreach (BodyPart item in list)
-		// 			{
-		// 				StoreParts(item);
-		// 			}
-		// 		}
-		// 		Part.Parts = null;
-		// 	}
-		// 	if (dismemberedPart != null)
-		// 	{
-		// 		if (DismemberedParts == null)
-		// 		{
-		// 			DismemberedParts = new List<Body.DismemberedPart>(1)
-		// 			{
-		// 				dismemberedPart
-		// 			};
-		// 		}
-		// 		else
-		// 		{
-		// 			DismemberedParts.Add(dismemberedPart);
-		// 		}
-		// 	}
-		// 	Part.ParentBody = null;
-		// }
-
-		// public Body.DismemberedPart FindRegenerablePart(int ParentID)
-		// {
-		// 	if (DismemberedParts != null)
-		// 	{
-		// 		foreach (Body.DismemberedPart dismemberedPart in DismemberedParts)
-		// 		{
-		// 			if ( dismemberedPart.ParentID == ParentID )
-		// 			{
-		// 				return dismemberedPart;
-		// 			}
-		// 		}
-		// 	}
-		// 	return null;
-		// }
 		
 		public BodyPart DeepCopy(BodyPart original)
 		{
