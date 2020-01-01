@@ -33,7 +33,7 @@ namespace XRL.World.Parts
             group2.Items.Add(new PopulationObject{ Blueprint="OperatingTable" });
             group2.Items.Add(new PopulationObject{ Blueprint="Bloodsplatter", Number="1-8" });
 
-            group2.Weight = 5;
+            group2.Weight = 1;
             AddToPopTable("CommonOddEncounters",group2);
 
 		}
